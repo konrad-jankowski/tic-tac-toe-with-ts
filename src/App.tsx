@@ -1,8 +1,12 @@
 import { useEffect, useState } from "react";
 import Square from "./Square";
 
-const INITIAL_GAME_STATE = ["", "", "", "", "", "", "", "", ""];
+type Scores = {
+  [key: string]: number;
+};
 
+const INITIAL_GAME_STATE = ["", "", "", "", "", "", "", "", ""];
+const INITIAL_SCORES: Scores = { X: 0, O: 0 };
 const WINNING_COMBOS = [
   [0, 1, 2],
   [3, 4, 5],
@@ -17,6 +21,7 @@ const WINNING_COMBOS = [
 function App() {
   const [gameState, setGameState] = useState(INITIAL_GAME_STATE);
   const [currentPlayer, setCurrentPlayer] = useState("X");
+  const [scores, setScores] = useState(INITIAL_SCORES);
 
   useEffect(() => {
     checkForWinner();
@@ -46,6 +51,10 @@ function App() {
     if (roundWon) {
       setTimeout(() => {
         window.alert(`Congrats player ${currentPlayer}! You are the winner`);
+        const newPlayerScore = scores[currentPlayer] + 1;
+        const newScores = { ...scores };
+        newScores[currentPlayer] = newPlayerScore;
+        setScores(newScores);
         resetBoard();
       }, 500);
 
@@ -56,6 +65,8 @@ function App() {
       setTimeout(() => {
         window.alert("The game ended in a draw");
         resetBoard();
+        if (currentPlayer === "X") {
+        }
       }, 500);
 
       return;
@@ -92,7 +103,10 @@ function App() {
             />
           ))}
         </div>
-        <div>Scores Go Here</div>
+        <div className="text-center mt-4 text-white">
+          Next player: {currentPlayer} <br />
+          X: {scores.X} <br /> O: {scores.O}
+        </div>
       </div>
     </div>
   );
